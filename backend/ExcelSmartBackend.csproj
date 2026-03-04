@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ExcelSmartBackend</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--
+      EPPlus 7+ requires license configuration.
+      For personal/non-commercial use, set LicenseContext = NonCommercial (free).
+      For commercial use, purchase a license from https://epplussoftware.com
+    -->
+    <PackageReference Include="EPPlus" Version="7.5.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+</Project>

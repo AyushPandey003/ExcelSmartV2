@@ -1,0 +1,11 @@
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+appsettings.Development.json
+# If you don't want to commit the main settings (usually you do, except secrets)
+# appsettings.json
