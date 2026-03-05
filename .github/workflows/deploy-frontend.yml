@@ -2,7 +2,7 @@ name: Build and deploy Node.js app to Azure Static Web Apps
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "prod" ]
     paths:
       - 'frontend/**'
   workflow_dispatch:
