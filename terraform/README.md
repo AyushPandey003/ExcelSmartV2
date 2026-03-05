@@ -19,7 +19,7 @@ You need to create an Azure Service Principal and add its credentials:
 - `AZURE_TENANT_ID`
 - `AZURE_SUBSCRIPTION_ID`
 
-*Note: For maximum security, configure your App Registration in Azure to use Federated Credentials (OIDC) pointing to your GitHub repository.*
+*Note: For maximum security, configure your App Registration in Azure to use Federated Credentials (OIDC). Since the workflow uses a GitHub Environment named `production`, you should add a credential for **Entity type: Environment** with the name `production`.*
 
 #### 2. Static Web App Token (for Frontend)
 After Terraform runs the first time, it will output the API Key for the Static Web App. You must copy that value and add it as a secret:

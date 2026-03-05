@@ -49,7 +49,7 @@ resource "azurerm_windows_web_app" "backend" {
     
     application_stack {
       current_stack  = "dotnet"
-      dotnet_version = "v10.0"
+      dotnet_version = "v8.0"
     }
 
     cors {
