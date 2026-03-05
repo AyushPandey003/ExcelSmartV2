@@ -19,10 +19,17 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<ExcelAnalysisService>();
 
+var frontendUrl = builder.Configuration["FrontendUrl"];
+var allowedOrigins = new List<string> { "http://localhost:3000", "http://localhost:5173" };
+if (!string.IsNullOrEmpty(frontendUrl)) {
+    allowedOrigins.Add(frontendUrl);
+}
+
 builder.Services.AddCors(o => o.AddPolicy("React", p =>
-    p.WithOrigins("http://localhost:3000", "http://localhost:5173")
+    p.WithOrigins(allowedOrigins.ToArray())
      .AllowAnyHeader()
-     .AllowAnyMethod()));
+     .AllowAnyMethod()
+     .AllowCredentials()));
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }

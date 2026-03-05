@@ -1,1 +1,18 @@
 frontend/pnpm-lock.yaml
+
+# Ignore Development settings which might have secret keys
+backend/appsettings.Development.json
+backend/appsettings.*.json
+
+# Local env files
+frontend/.env
+frontend/.env.*
+.env
+.env.*
+
+# Standard ignores
+node_modules/
+backend/bin/
+backend/obj/
+backend/.vs/
+backend/*.user

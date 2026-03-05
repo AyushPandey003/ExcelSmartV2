@@ -1,0 +1,57 @@
+name: Build and deploy Node.js app to Azure Static Web Apps
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
+
+env:
+  APP_LOCATION: "./frontend" # location of your client code
+  API_LOCATION: "" # backend API provided separately
+  OUTPUT_LOCATION: "dist" # Vite output dir
+
+permissions:
+  contents: read
+  id-token: write # Required for Azure OIDC
+
+jobs:
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ${{ env.APP_LOCATION }}
+
+      - name: Build and Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          app_location: ${{ env.APP_LOCATION }}
+          api_location: ${{ env.API_LOCATION }}
+          output_location: ${{ env.OUTPUT_LOCATION }}
+          # Vite requires an environment variable to build the app properly sometimes.
+          # Providing our production API URL if required
+          # app_build_command: 'npm run build'
+        env:
+          VITE_API_BASE_URL: https://app-excelsmartv2-prod.azurewebsites.net

@@ -79,7 +79,7 @@ dotnet run
 # → Swagger: http://localhost:5000/swagger
 ```
 
-Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+Requires [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ---
 
