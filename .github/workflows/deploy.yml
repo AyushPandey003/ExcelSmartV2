@@ -6,8 +6,8 @@ name: Build & Deploy
 
 on:
   push:
-  branches: [main]
-  workflow_dispatch: # manual trigger only
+    branches: [main]
+  workflow_dispatch: # manual trigger
 
 concurrency:
   group: deploy-${{ github.ref }}
