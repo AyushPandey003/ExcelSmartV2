@@ -1,4 +1,6 @@
 import { useState, useRef, useCallback } from "react";
+import ApiKeyPanel from "../components/ApiKeyPanel";
+import { getUserGeminiKey, getUserGeminiModel } from "../lib/userGeminiKey";
 
 const EXCEL_AI_SYSTEM = `You are ExcelBot — an expert Excel tutor helping a beginner user understand their own spreadsheet.
 
@@ -28,6 +30,8 @@ export default function UploadAnalyze() {
   const [msgs, setMsgs]       = useState([]);
   const [input, setInput]     = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(() => getUserGeminiKey());
+  const [model, setModel] = useState(() => getUserGeminiModel());
   const fileRef = useRef(null);
   const chatRef = useRef(null);
 
@@ -70,6 +74,15 @@ export default function UploadAnalyze() {
   async function sendAI(text) {
     const q = text || input.trim();
     if (!q) return;
+
+    if (!apiKey) {
+      setMsgs(m => [...m, {
+        role: "ai",
+        text: "🔐 Add your Gemini API key first. Your key stays in this browser tab and is never stored on our servers.",
+      }]);
+      return;
+    }
+
     setInput("");
     setMsgs(m => [...m, { role:"user", text:q }]);
     setAiLoading(true);
@@ -79,10 +92,9 @@ export default function UploadAnalyze() {
     const ctx = analysis ? buildContext(analysis) : "";
     const systemWithCtx = EXCEL_AI_SYSTEM + (ctx ? `\n\nSPREADSHEET CONTEXT:\n${ctx}` : "");
 
-    const apiKey = import.meta.env.VITE_GEMINI_KEY || "";
     try {
       const history = msgs.map(m => ({ role: m.role==="ai"?"model":"user", parts: [{ text: m.text }] }));
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const res = await fetch(url, {
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -135,6 +147,8 @@ export default function UploadAnalyze() {
         <h1>📂 Upload & Analyze Your Excel File</h1>
         <p>Upload any .xlsx or .csv file — the AI will analyze it, find errors, and answer questions about your specific data!</p>
       </div>
+
+      <ApiKeyPanel onKeyChange={setApiKey} onModelChange={setModel} />
 
       {/* Drop zone */}
       {!analysis && (
@@ -357,11 +371,11 @@ export default function UploadAnalyze() {
                   <input className="input" value={input}
                     onChange={e=>setInput(e.target.value)}
                     onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendAI()}}}
-                    placeholder="Ask about your file..."
-                    disabled={aiLoading}
+                    placeholder={apiKey ? "Ask about your file..." : "Add your API key to chat about this file"}
+                    disabled={aiLoading || !apiKey}
                     style={{fontSize:13}}
                   />
-                  <button className="btn btn-green btn-sm" onClick={()=>sendAI()} disabled={aiLoading||!input.trim()}>
+                  <button className="btn btn-green btn-sm" onClick={()=>sendAI()} disabled={aiLoading||!input.trim()||!apiKey}>
                     Ask
                   </button>
                 </div>
@@ -377,7 +391,7 @@ export default function UploadAnalyze() {
                     {quickPrompts.map((p,i)=>(
                       <button key={i} className="btn btn-ghost btn-sm"
                         style={{textAlign:"left",justifyContent:"flex-start",fontSize:12,whiteSpace:"normal",lineHeight:1.4}}
-                        onClick={()=>sendAI(p)} disabled={aiLoading}>
+                        onClick={()=>sendAI(p)} disabled={aiLoading || !apiKey}>
                         {p}
                       </button>
                     ))}

@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import ApiKeyPanel from "../components/ApiKeyPanel";
+import { getUserGeminiKey, getUserGeminiModel } from "../lib/userGeminiKey";
 
 const SYSTEM = `You are "ExcelBot" — a friendly, patient AI tutor who ONLY helps people learn Microsoft Excel.
 Users are beginners. RULES:
@@ -31,6 +33,8 @@ export default function AskExcel() {
   }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(() => getUserGeminiKey());
+  const [model, setModel] = useState(() => getUserGeminiModel());
   const bottomRef = useRef(null);
 
   useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[msgs,loading]);
@@ -38,13 +42,22 @@ export default function AskExcel() {
   async function send(text) {
     const q = text || input.trim();
     if (!q) return;
+
+    if (!apiKey) {
+      setMsgs(m => [...m, {
+        role: "ai",
+        text: "🔐 Add your Gemini API key first to use AI chat. We never store it on our servers.",
+      }]);
+      return;
+    }
+
     setInput("");
     setMsgs(m=>[...m,{role:"user",text:q}]);
     setLoading(true);
-    const apiKey = import.meta.env.VITE_GEMINI_KEY || "";
+
     try {
       const history = msgs.map(m=>({ role:m.role==="ai"?"model":"user", parts:[{text:m.text}] }));
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const res = await fetch(url,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -67,6 +80,8 @@ export default function AskExcel() {
         <p>Ask any Excel question in plain, simple words — I'll explain it like a friendly teacher with real formulas!</p>
       </div>
 
+      <ApiKeyPanel onKeyChange={setApiKey} onModelChange={setModel} />
+
       <div style={{display:"flex",gap:20}}>
         <div style={{flex:1,minWidth:0}}>
           <div className="chat-wrap">
@@ -83,8 +98,9 @@ export default function AskExcel() {
             <div className="chat-input-row">
               <input className="input" value={input} onChange={e=>setInput(e.target.value)}
                 onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}}}
-                placeholder="Ask any Excel question..." disabled={loading}/>
-              <button className="btn btn-green" onClick={()=>send()} disabled={loading||!input.trim()}>Ask 🚀</button>
+                placeholder={apiKey ? "Ask any Excel question..." : "Add your API key to start chatting"}
+                disabled={loading || !apiKey}/>
+              <button className="btn btn-green" onClick={()=>send()} disabled={loading||!input.trim()||!apiKey}>Ask 🚀</button>
             </div>
           </div>
         </div>
@@ -96,7 +112,7 @@ export default function AskExcel() {
               {SUGGESTIONS.map(s=>(
                 <button key={s} className="btn btn-ghost btn-sm"
                   style={{textAlign:"left",justifyContent:"flex-start",fontSize:12,whiteSpace:"normal",lineHeight:1.4}}
-                  onClick={()=>send(s)} disabled={loading}>{s}</button>
+                  onClick={()=>send(s)} disabled={loading || !apiKey}>{s}</button>
               ))}
             </div>
           </div>

@@ -49,7 +49,7 @@ export default function App() {
         <div className="sb-bottom">
           <div>🎓 Learn Excel step by step</div>
           <div>⚡ EPPlus NonCommercial</div>
-          <div>🤖 Claude AI powered</div>
+          <div>🤖 BYOK Gemini powered</div>
         </div>
       </aside>
       <main className="main">

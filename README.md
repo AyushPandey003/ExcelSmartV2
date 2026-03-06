@@ -3,7 +3,7 @@
 Full-stack Excel learning + generation + file analysis tool.
 - **Frontend:** React 18 + Vite
 - **Backend:** ASP.NET Core 8 + **EPPlus 7** (NonCommercial License)
-- **AI:** Claude (Anthropic) via API
+- **AI:** Gemini (Bring Your Own Key from browser)
 
 ---
 
@@ -55,20 +55,13 @@ npm run dev
 # → http://localhost:3000
 ```
 
-**Add API key** — create `frontend/.env`:
-```env
-VITE_ANTHROPIC_KEY=sk-ant-your-key-here
-```
+**AI key setup (BYOK):**
+- Open any AI page (`Ask ExcelBot`, `Generate Excel`, or `Upload & Analyze`)
+- Paste your Gemini API key in the **Bring Your Own Gemini API Key** panel
+- The key is stored only in browser session storage for the current tab
+- The key is sent directly from browser to Gemini and never stored on ExcelSmart servers
 
-Then in `AskExcel.jsx`, `ExcelGen.jsx`, and `UploadAnalyze.jsx`, update fetch headers:
-```js
-headers: {
-  "Content-Type": "application/json",
-  "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-direct-browser-access": "true",
-}
-```
+Get a Gemini API key from Google AI Studio.
 
 ### Backend
 ```bash
