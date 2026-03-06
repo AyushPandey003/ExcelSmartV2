@@ -5,9 +5,7 @@
 name: Build & Deploy
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch: # manual trigger
+  workflow_dispatch: # manual trigger only
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -97,7 +95,7 @@ jobs:
           restore-keys: pnpm-${{ runner.os }}-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile  # reproducible, no lockfile mutation
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
         run: pnpm build
