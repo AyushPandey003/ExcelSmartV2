@@ -103,6 +103,7 @@ jobs:
         run: pnpm build
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_GEMINI_KEY: ${{ secrets.VITE_GEMINI_KEY }}
 
       - name: Deploy to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
