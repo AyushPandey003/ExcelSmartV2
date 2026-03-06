@@ -46,11 +46,13 @@ jobs:
           restore-keys: nuget-${{ runner.os }}-
 
       - name: Restore
-        run: dotnet restore --verbosity minimal
+        run: dotnet restore --runtime linux-x64 --verbosity minimal
 
-      - name: Publish (Release, trimmed, ready-to-run)
+      - name: Publish (Release, ready-to-run)
         run: |
           dotnet publish -c Release \
+            --runtime linux-x64 \
+            --self-contained false \
             -o ${{ github.workspace }}/publish \
             --no-restore \
             /p:PublishReadyToRun=true
