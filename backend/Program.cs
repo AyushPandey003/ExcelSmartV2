@@ -20,7 +20,7 @@ builder.Services.AddScoped<ExcelService>();
 builder.Services.AddScoped<ExcelAnalysisService>();
 
 // CORS: allow localhost dev servers + production Static Web App origin
-var corsOrigins = new List<string> { "http://localhost:3000", "http://localhost:5173" };
+var corsOrigins = new List<string> { "http://localhost:3000", "http://localhost:5173", "https://excelsmart-api.azurewebsites.net" };
 var prodOrigin = builder.Configuration["CORS_ORIGIN"];
 if (!string.IsNullOrWhiteSpace(prodOrigin)) corsOrigins.Add(prodOrigin);
 
@@ -35,3 +35,4 @@ app.UseCors("React");
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
