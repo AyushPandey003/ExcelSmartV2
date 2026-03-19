@@ -134,7 +134,7 @@ const SYSTEM = `You are an Excel data generator. Respond ONLY with valid JSON, n
 { "title": "...", "headers": ["Col1","Col2",...], "rows": [["val",...], ...] }
 Generate 10-15 realistic rows. Use Indian context when relevant. Numbers only (no ₹ symbol in data). Do not include currency symbols in numeric cells.`;
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5000";
 
 // ── Chart.js preview ─────────────────────────────────────────────────────────
 function ChartPreview({ data, chartType }) {

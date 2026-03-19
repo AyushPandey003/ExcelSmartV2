@@ -50,8 +50,10 @@ export default function UploadAnalyze() {
     const fd = new FormData();
     fd.append("file", file);
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
     try {
-      const res = await fetch("http://localhost:5000/api/excel/upload", { method:"POST", body:fd });
+      const res = await fetch(`${API_URL}/excel/upload`, { method:"POST", body:fd });
       const data = await res.json();
       if (!data.success) { setError(data.error || "Analysis failed."); return; }
       setAnalysis(data);
@@ -62,7 +64,7 @@ export default function UploadAnalyze() {
         text:`✅ I've analyzed your file **${data.fileName}**!\n\n📊 Sheet: "${data.activeSheet}" | ${data.totalRows} rows × ${data.totalCols} columns\n📋 Columns: ${data.headers.join(", ")}\n${data.issues?.length > 0 ? `⚠️ I found ${data.issues.length} issue(s) in your spreadsheet — check the Issues tab!\n` : "✅ No errors detected!\n"}\nYou can now ask me anything about your spreadsheet. For example:\n• "Explain the errors"\n• "How do I sum the ${data.headers[1] || "Amount"} column?"\n• "What formula shows me the average of ${data.headers[1] || "values"}?"\n\nWhat would you like to know? 😊`,
       }]);
     } catch {
-      setError("Could not connect to backend. Make sure it's running on http://localhost:5000");
+      setError(`Could not connect to backend. Please check your connection.`);
     } finally {
       setUploading(false);
     }

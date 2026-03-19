@@ -6,10 +6,17 @@ data "azurerm_resource_group" "rg" {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+#  Generates a short random string to ensure globally unique names
+# ─────────────────────────────────────────────────────────────────────────────
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 #  App Service Plan  (Linux / B1)
 # ─────────────────────────────────────────────────────────────────────────────
 resource "azurerm_service_plan" "backend_plan" {
-  name                = "excelsmart-asp"
+  name                = "excelsmart-asp-${random_id.suffix.hex}"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Linux"
@@ -20,7 +27,7 @@ resource "azurerm_service_plan" "backend_plan" {
 #  App Service  (.NET 10 backend)
 # ─────────────────────────────────────────────────────────────────────────────
 resource "azurerm_linux_web_app" "backend" {
-  name                = "excelsmart-api-ayush"
+  name                = "excelsmart-api-${random_id.suffix.hex}"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.backend_plan.id
