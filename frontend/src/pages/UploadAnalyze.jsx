@@ -32,6 +32,9 @@ export default function UploadAnalyze() {
   const [aiLoading, setAiLoading] = useState(false);
   const [apiKey, setApiKey] = useState(() => getUserGeminiKey());
   const [model, setModel] = useState(() => getUserGeminiModel());
+  const [modifyPrompt, setModifyPrompt] = useState("");
+  const [modifying, setModifying] = useState(false);
+  const [modifiedData, setModifiedData] = useState(null);
   const fileRef = useRef(null);
   const chatRef = useRef(null);
 
@@ -122,6 +125,64 @@ export default function UploadAnalyze() {
     s += `Stats: Sum=${a.stats?.sum}, Avg=${a.stats?.average}, Min=${a.stats?.min}, Max=${a.stats?.max}\n`;
     if (a.rows?.length) s += `Sample rows:\n${a.rows.slice(0,5).map(r=>r.join(" | ")).join("\n")}`;
     return s;
+  }
+
+  // ── Modify with AI ─────────────────────────────────────────────────────────
+  async function modifyWithAI() {
+    if (!modifyPrompt.trim() || !analysis || !apiKey) return;
+    setModifying(true);
+    setModifiedData(null);
+    const ctx = buildContext(analysis);
+    const sysPrompt = `You are an Excel data modifier. The user has uploaded a spreadsheet and wants to modify it.\n\nSPREADSHEET CONTEXT:\n${ctx}\n\nThe user will describe what changes they want. Respond ONLY with valid JSON:\n{ "title": "Modified - original title", "headers": ["Col1","Col2",...], "rows": [["val",...], ...] }\n\nApply the user's requested changes to the data. Keep the same structure unless they ask to add/remove columns. Use realistic data.`;
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: sysPrompt }] },
+          contents: [{ role: "user", parts: [{ text: modifyPrompt }] }]
+        }),
+      });
+      const d = await res.json();
+      const raw = d.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      setModifiedData(JSON.parse(raw.replace(/```json|```/g, "").trim()));
+    } catch {
+      setMsgs(m => [...m, { role: "ai", text: "❌ Could not generate modified data. Please try again." }]);
+    } finally {
+      setModifying(false);
+    }
+  }
+
+  function downloadModifiedCsv() {
+    if (!modifiedData) return;
+    const rows = [modifiedData.headers, ...modifiedData.rows];
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `${modifiedData.title || "modified"}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function downloadModifiedXlsx() {
+    if (!modifiedData) return;
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const res = await fetch(`${API_BASE}/api/excel/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(modifiedData),
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `${modifiedData.title || "Modified"}.xlsx`; a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      downloadModifiedCsv();
+    }
   }
 
   // ── Quick prompts based on file ──────────────────────────────────────────────
@@ -230,6 +291,8 @@ export default function UploadAnalyze() {
                   {id:"issues",  label:`⚠️ Issues (${analysis.issues?.length||0})`, red: analysis.issues?.length > 0},
                   {id:"formulas",label:`𝑓𝑥 Formulas (${analysis.formulas?.length||0})`},
                   {id:"columns", label:"📊 Columns"},
+                  {id:"modify",  label:"🔄 Modify & Export"},
+                  {id:"insights", label:"💡 AI Insights"},
                 ].map(t=>(
                   <button key={t.id}
                     className={`btn btn-sm ${activeTab===t.id?"btn-green":"btn-ghost"}`}
@@ -342,6 +405,120 @@ export default function UploadAnalyze() {
                   ))}
                 </div>
               )}
+
+              {/* Modify & Export tab */}
+              {activeTab==="modify" && (
+                <div>
+                  <div className="card" style={{marginBottom:16}}>
+                    <div style={{fontWeight:800,fontSize:15,marginBottom:12}}>🔄 Describe Your Changes</div>
+                    <p style={{color:"var(--text2)",fontSize:13,marginBottom:14,lineHeight:1.7}}>
+                      Tell the AI what modifications you want. It will generate a new version of your data that you can download.
+                    </p>
+                    <textarea className="textarea" value={modifyPrompt} onChange={e=>setModifyPrompt(e.target.value)}
+                      placeholder={"Examples:\n• Add a Percentage column calculated from Total/Max\n• Sort rows by the Amount column descending\n• Add 5 more rows with similar data\n• Convert all dates to DD-MMM-YYYY format\n• Add a Status column: 'High' if Amount>5000, else 'Normal'"}
+                      style={{minHeight:100,fontSize:13,marginBottom:12}} />
+                    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+                      {[
+                        "Add a Total row at the bottom",
+                        "Add a Percentage column",
+                        "Add 10 more rows with similar data",
+                        `Sort by ${analysis?.headers[1] || "Amount"} descending`,
+                        "Add a Status column based on values",
+                      ].map((s,i)=>(
+                        <button key={i} className="chip" onClick={()=>setModifyPrompt(s)} style={{fontSize:11}}>{s}</button>
+                      ))}
+                    </div>
+                    <button className="btn btn-blue" onClick={modifyWithAI} disabled={modifying||!modifyPrompt.trim()||!apiKey} style={{width:"100%"}}>
+                      {modifying ? "⏳ AI is modifying..." : "🔄 Generate Modified Version"}
+                    </button>
+                  </div>
+
+                  {modifiedData && (
+                    <div>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                        <div>
+                          <h3 style={{fontSize:16,fontWeight:800}}>{modifiedData.title}</h3>
+                          <p style={{color:"var(--text2)",fontSize:12}}>{modifiedData.rows?.length} rows × {modifiedData.headers?.length} columns</p>
+                        </div>
+                        <div style={{display:"flex",gap:8}}>
+                          <button className="btn btn-ghost btn-sm" onClick={downloadModifiedCsv}>⬇ CSV</button>
+                          <button className="btn btn-green btn-sm" onClick={downloadModifiedXlsx}>⬇ Excel (.xlsx)</button>
+                        </div>
+                      </div>
+                      <div className="xl-wrap">
+                        <table className="xl-table">
+                          <thead>
+                            <tr>
+                              <th className="rn">#</th>
+                              {modifiedData.headers?.map((h,i)=><th key={i}>{h}</th>)}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {modifiedData.rows?.map((row,ri)=>(
+                              <tr key={ri}>
+                                <td className="rn" style={{fontSize:11,padding:"6px 10px"}}>{ri+1}</td>
+                                {row.map((cell,ci)=><td key={ci}>{cell}</td>)}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* AI Insights tab */}
+              {activeTab==="insights" && (
+                <div>
+                  <div className="card" style={{marginBottom:16}}>
+                    <div style={{fontWeight:800,fontSize:15,marginBottom:12}}>💡 Quick AI Insights</div>
+                    <p style={{color:"var(--text2)",fontSize:13,marginBottom:14}}>
+                      Click any insight to get AI analysis of your data.
+                    </p>
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {[
+                        {icon:"📊", text:"Summarize this spreadsheet in 5 bullet points"},
+                        {icon:"🔍", text:"What patterns or trends do you see in this data?"},
+                        {icon:"⚠️", text:"What potential data quality issues do you notice?"},
+                        {icon:"💡", text:"Suggest 5 useful formulas I should add to this spreadsheet"},
+                        {icon:"📈", text:"If this were a report, what charts would best visualize this data?"},
+                        {icon:"🧮", text:"Calculate key statistics and summarize the numeric columns"},
+                        {icon:"🔄", text:"How could I restructure this data to make it more useful?"},
+                        {icon:"📋", text:"Create a pivot table summary suggestion for this data"},
+                      ].map((item,i)=>(
+                        <button key={i} className="btn btn-ghost"
+                          style={{textAlign:"left",justifyContent:"flex-start",gap:12,fontSize:13,whiteSpace:"normal",lineHeight:1.5}}
+                          onClick={()=>sendAI(item.text)} disabled={aiLoading || !apiKey}>
+                          <span style={{fontSize:18}}>{item.icon}</span>
+                          <span>{item.text}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {analysis?.stats && (
+                    <div className="card">
+                      <div style={{fontWeight:800,fontSize:14,marginBottom:14}}>📊 Cell Statistics</div>
+                      <div className="g3">
+                        {[
+                          {label:"Numeric Cells",  val:analysis.stats.numericCells,  color:"var(--accent)"},
+                          {label:"Text Cells",     val:analysis.stats.textCells,     color:"var(--blue)"},
+                          {label:"Empty Cells",    val:analysis.stats.emptyCells,    color:"var(--text3)"},
+                          {label:"Formula Cells",  val:analysis.stats.formulaCells,  color:"var(--purple)"},
+                          {label:"Error Cells",    val:analysis.stats.errorCells,    color:"var(--red)"},
+                          {label:"Total Formulas", val:analysis.formulas?.length||0, color:"var(--orange)"},
+                        ].map(s=>(
+                          <div key={s.label} style={{background:"var(--bg3)",border:"1px solid var(--border)",borderRadius:10,padding:"12px 16px",textAlign:"center"}}>
+                            <div style={{fontSize:24,fontWeight:900,color:s.color}}>{s.val ?? 0}</div>
+                            <div style={{fontSize:11,color:"var(--text2)",marginTop:4,fontWeight:700}}>{s.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Right: AI Chat */}
@@ -405,27 +582,52 @@ export default function UploadAnalyze() {
 
       {/* Before upload help */}
       {!analysis && !uploading && (
-        <div className="g2" style={{marginTop:24}}>
-          <div className="card card-g">
-            <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>✅ What This Tool Does</div>
-            <ul style={{color:"var(--text2)",fontSize:13,lineHeight:2.2,paddingLeft:18}}>
-              <li>Reads your Excel file and shows a data preview</li>
-              <li>Detects formula errors like #REF!, #DIV/0!, #VALUE!</li>
-              <li>Lists all formulas used in your spreadsheet</li>
-              <li>Gives AI-powered explanations and fix suggestions</li>
-              <li>Lets you ask questions about YOUR specific data</li>
-              <li>Suggests useful formulas for your column names</li>
-            </ul>
+        <div style={{marginTop:24}}>
+          <div className="g2" style={{marginBottom:16}}>
+            <div className="card card-g">
+              <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>✅ What This Tool Does</div>
+              <ul style={{color:"var(--text2)",fontSize:13,lineHeight:2.2,paddingLeft:18}}>
+                <li>Reads your Excel file and shows a data preview</li>
+                <li>Detects formula errors like #REF!, #DIV/0!, #VALUE!</li>
+                <li>Lists all formulas used in your spreadsheet</li>
+                <li>Gives AI-powered explanations and fix suggestions</li>
+                <li>Lets you ask questions about YOUR specific data</li>
+                <li>Suggests useful formulas for your column names</li>
+              </ul>
+            </div>
+            <div className="card card-b">
+              <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>💡 How to Use</div>
+              <div style={{fontSize:13,color:"var(--text2)",lineHeight:2.2}}>
+                1️⃣ Upload your .xlsx or .csv file<br/>
+                2️⃣ Check the <b style={{color:"var(--text)"}}>Data Preview</b> tab<br/>
+                3️⃣ Check <b style={{color:"var(--red)"}}>Issues</b> tab for any errors<br/>
+                4️⃣ Click <b style={{color:"var(--text)"}}>🤖 Fix with AI</b> on any error<br/>
+                5️⃣ Use <b style={{color:"var(--blue)"}}>🔄 Modify & Export</b> to transform data<br/>
+                6️⃣ Check <b style={{color:"var(--purple)"}}>💡 AI Insights</b> for smart analysis
+              </div>
+            </div>
           </div>
-          <div className="card card-b">
-            <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>💡 How to Use</div>
-            <div style={{fontSize:13,color:"var(--text2)",lineHeight:2.2}}>
-              1️⃣ Upload your .xlsx or .csv file<br/>
-              2️⃣ Check the <b style={{color:"var(--text)"}}>Data Preview</b> tab<br/>
-              3️⃣ Check <b style={{color:"var(--red)"}}>Issues</b> tab for any errors<br/>
-              4️⃣ Click <b style={{color:"var(--text)"}}>🤖 Fix with AI</b> on any error<br/>
-              5️⃣ Or ask any question in the chat<br/>
-              6️⃣ Check <b style={{color:"var(--text)"}}>Formulas</b> tab to understand existing formulas
+          <div className="g2">
+            <div className="card card-y">
+              <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>🔄 Modify & Export (NEW)</div>
+              <div style={{fontSize:13,color:"var(--text2)",lineHeight:2.2}}>
+                After uploading, use the <b style={{color:"var(--text)"}}>Modify & Export</b> tab to:<br/>
+                • Add new columns with calculated values<br/>
+                • Sort or filter your data differently<br/>
+                • Add more rows with similar patterns<br/>
+                • Transform and download as .xlsx or .csv<br/>
+                • AI understands your data context automatically
+              </div>
+            </div>
+            <div className="card" style={{borderColor:"rgba(188,140,255,.3)",background:"rgba(188,140,255,.05)"}}>
+              <div style={{fontWeight:800,marginBottom:10,fontSize:15}}>📂 Supported Formats</div>
+              <div style={{fontSize:13,color:"var(--text2)",lineHeight:2.2}}>
+                • <b style={{color:"var(--text)"}}>.xlsx</b> — Modern Excel files (recommended)<br/>
+                • <b style={{color:"var(--text)"}}>.xls</b> — Legacy Excel 97-2003 files<br/>
+                • <b style={{color:"var(--text)"}}>.csv</b> — Comma-separated values<br/>
+                • Maximum file size: <b style={{color:"var(--text)"}}>10 MB</b><br/>
+                • All sheets are detected — you can switch between them
+              </div>
             </div>
           </div>
         </div>

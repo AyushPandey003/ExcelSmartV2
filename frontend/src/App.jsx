@@ -10,7 +10,7 @@ import "./styles.css";
 const NAV = [
   { section: "Learn Excel", items: [
     { id: "dashboard", ni: "🏠", label: "Home" },
-    { id: "learn",     ni: "📚", label: "Lessons", badge: "12" },
+    { id: "learn",     ni: "📚", label: "Lessons", badge: "30" },
     { id: "formulas",  ni: "𝑓𝑥", label: "Formula Guide" },
   ]},
   { section: "AI Tools", items: [

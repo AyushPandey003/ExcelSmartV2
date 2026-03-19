@@ -1,14 +1,14 @@
 export default function Dashboard({ onNavigate }) {
   const stats = [
-    { icon:"📚", label:"Lessons",    val:"12",  color:"#2dba73", bg:"rgba(45,186,115,.15)" },
-    { icon:"𝑓𝑥", label:"Formulas",   val:"40+", color:"#58a6ff", bg:"rgba(88,166,255,.15)" },
+    { icon:"📚", label:"Lessons",    val:"30",  color:"#2dba73", bg:"rgba(45,186,115,.15)" },
+    { icon:"𝑓𝑥", label:"Formulas",   val:"70+", color:"#58a6ff", bg:"rgba(88,166,255,.15)" },
     { icon:"🤖", label:"AI Tutor",   val:"24/7",color:"#bc8cff", bg:"rgba(188,140,255,.15)" },
     { icon:"📂", label:"File Analyzer",val:"NEW",color:"#f0883e", bg:"rgba(240,136,62,.15)" },
   ];
 
   const features = [
-    { id:"learn",   icon:"📚", title:"Step-by-Step Lessons",    badge:"b-g", bt:"12 Lessons",
-      desc:"Learn Excel from scratch — cells, formulas, sorting, filtering — one tiny step at a time with quizzes.",
+    { id:"learn",   icon:"📚", title:"Step-by-Step Lessons",    badge:"b-g", bt:"30 Lessons",
+      desc:"Learn Excel from scratch — cells, formulas, pivot tables, sparklines, named ranges, error handling — one step at a time with quizzes.",
       color:"var(--accent)" },
     { id:"ask",     icon:"🤖", title:"Ask ExcelBot (AI)",        badge:"b-p", bt:"AI Powered",
       desc:"Ask any Excel question in plain words. The AI replies simply with real formulas and examples.",
@@ -17,9 +17,9 @@ export default function Dashboard({ onNavigate }) {
       desc:"Pick a template, AI fills the data, backend builds a real .xlsx with charts, totals and formatting.",
       color:"var(--orange)" },
     { id:"upload",  icon:"📂", title:"Upload & Analyze",         badge:"b-b", bt:"NEW ✨",
-      desc:"Upload your own Excel file. AI detects formula errors, explains them, lets you ask questions about your data.",
+      desc:"Upload, analyze, modify, and export. AI detects errors, answers questions, and lets you transform your data with AI.",
       color:"var(--blue)" },
-    { id:"formulas",icon:"𝑓𝑥", title:"Formula Reference",        badge:"b-y", bt:"40+ Formulas",
+    { id:"formulas",icon:"𝑓𝑥", title:"Formula Reference",        badge:"b-y", bt:"70+ Formulas",
       desc:"Searchable guide to every essential Excel formula — plain-English explanations with real examples.",
       color:"var(--yellow)" },
   ];

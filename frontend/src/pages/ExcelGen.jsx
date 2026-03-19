@@ -60,6 +60,63 @@ const TEMPLATES = [
     includeChart: true, chartType: "Column"
   },
   {
+    id: "wedding", icon: "💒", label: "Wedding Planner", desc: "Event checklist & budget",
+    prompt: "wedding event planner with columns: Task, Category (Venue/Catering/Decoration/Photography/Clothing/Music), Assigned To, Deadline, Estimated Cost, Actual Cost, Status (Pending/Done/In Progress), Priority (High/Medium/Low). 15 realistic rows for an Indian wedding."
+  },
+  {
+    id: "fitness", icon: "💪", label: "Fitness Tracker", desc: "Workout & progress log",
+    prompt: "weekly fitness tracker with columns: Day, Exercise Type, Duration(mins), Sets, Reps, Calories Burned, Heart Rate, Notes. 14 rows covering 2 weeks of realistic gym and cardio workouts.",
+    includeChart: true, chartType: "Line"
+  },
+  {
+    id: "comparison", icon: "⚖️", label: "Product Comparison", desc: "Compare features & prices",
+    prompt: "product comparison sheet with columns: Feature, Product A (iPhone 15), Product B (Samsung S24), Product C (OnePlus 12), Winner. 12 rows comparing specs like Price, Display, Camera, Battery, Storage, RAM, Processor, OS, Weight, Warranty, Rating, Value Score."
+  },
+  {
+    id: "cashflow", icon: "💵", label: "Cash Flow Statement", desc: "Monthly income vs expenses",
+    prompt: "monthly cash flow statement with columns: Month, Opening Balance, Income, Expenses, Net Cash Flow, Closing Balance, Cumulative Cash Flow. 12 months of realistic small business cash flow data in Indian Rupees.",
+    includeChart: true, chartType: "Area"
+  },
+  {
+    id: "gradebook", icon: "🎓", label: "Teacher's Gradebook", desc: "Class grades & analytics",
+    prompt: "teacher's gradebook with columns: Roll No, Student Name, Assignment 1, Assignment 2, Midterm, Quiz 1, Quiz 2, Final Exam, Total Score, Percentage, Grade, Rank. 15 students with realistic scores.",
+    includeChart: true, chartType: "Bar"
+  },
+  {
+    id: "crm", icon: "🤝", label: "CRM / Lead Tracker", desc: "Sales leads & pipeline",
+    prompt: "sales CRM lead tracker with columns: Lead ID, Contact Name, Company, Email, Phone, Source (Website/Referral/LinkedIn/Cold Call), Stage (New/Contacted/Qualified/Proposal/Won/Lost), Deal Value, Follow-up Date, Assigned To. 15 realistic B2B leads."
+  },
+  {
+    id: "habit", icon: "✅", label: "Habit Tracker", desc: "Daily habit checklist",
+    prompt: "monthly habit tracker with columns: Habit Name, Day 1, Day 2, Day 3, Day 4, Day 5, Day 6, Day 7, Day 8, Day 9, Day 10, Total Days Done, Streak, Completion%. Use Y/N values for each day. 12 habits like Exercise, Reading, Meditation, No Junk Food, Water 3L, Sleep by 11pm, Journaling, Study 2hrs, No Social Media, Walk 10K steps, Vitamins, Gratitude."
+  },
+  {
+    id: "timetable", icon: "🕐", label: "Class Timetable", desc: "Weekly schedule planner",
+    prompt: "weekly class timetable with columns: Time Slot, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday. 8 rows for time slots from 8:00-9:00 to 3:00-4:00. Fill with realistic school/college subjects like Maths, Physics, Chemistry, English, Hindi, Computer Science, PE, Library, Lab."
+  },
+  {
+    id: "travel", icon: "✈️", label: "Trip Planner", desc: "Travel itinerary & budget",
+    prompt: "travel trip planner with columns: Day, Date, City, Activity, Location, Start Time, End Time, Estimated Cost, Actual Cost, Transport, Booking Status (Confirmed/Pending/Not Booked), Notes. 14 rows for a 7-day Rajasthan trip covering Jaipur, Udaipur, Jodhpur."
+  },
+  {
+    id: "health", icon: "❤️", label: "Health Log", desc: "Blood pressure & vitals tracker",
+    prompt: "daily health tracker with columns: Date, Time, Systolic BP, Diastolic BP, Heart Rate, Blood Sugar (Fasting), Weight(kg), Steps, Water(glasses), Sleep(hours), Mood (Good/OK/Low), Medication Taken (Yes/No). 14 rows of realistic daily health data.",
+    includeChart: true, chartType: "Line"
+  },
+  {
+    id: "rental", icon: "🏠", label: "Rental Tracker", desc: "Tenant & rent management",
+    prompt: "rental property tracker with columns: Unit No, Tenant Name, Phone, Monthly Rent, Deposit Paid, Lease Start, Lease End, Last Payment Date, Amount Paid, Balance Due, Status (Active/Vacant/Notice Period). 12 units with realistic Indian rental data."
+  },
+  {
+    id: "menu", icon: "🍽️", label: "Restaurant Menu", desc: "Menu with pricing & categories",
+    prompt: "restaurant menu sheet with columns: Item Code, Item Name, Category (Starters/Main Course/Breads/Rice/Desserts/Beverages), Veg or Non-Veg, Half Plate Price, Full Plate Price, GST(5%), Total Price, Popular (Yes/No), Spice Level (Mild/Medium/Hot). 15 items for an Indian restaurant."
+  },
+  {
+    id: "election", icon: "🗳️", label: "Election Results", desc: "Voting data & analysis",
+    prompt: "election results sheet with columns: Constituency, Candidate Name, Party, Votes Received, Vote Share%, EVM Votes, Postal Votes, Margin, Result (Won/Lost/Runner-up). 12 constituencies with realistic Indian election data.",
+    includeChart: true, chartType: "Bar"
+  },
+  {
     id: "custom", icon: "✨", label: "Custom", desc: "Describe your own spreadsheet", prompt: ""
   },
 ];
@@ -70,6 +127,7 @@ const CHART_TYPES = [
   { id: "Line",   icon: "📈", label: "Line" },
   { id: "Pie",    icon: "🥧", label: "Pie" },
   { id: "Area",   icon: "🏔️", label: "Area" },
+  { id: "Scatter",icon: "🔵", label: "Scatter" },
 ];
 
 const SYSTEM = `You are an Excel data generator. Respond ONLY with valid JSON, no markdown:
@@ -126,7 +184,7 @@ function ChartPreview({ data, chartType }) {
 
       const isPie = chartType === "Pie";
       const chartTypeMap = {
-        Column: "bar", Bar: "bar", Line: "line", Pie: "pie", Area: "line",
+        Column: "bar", Bar: "bar", Line: "line", Pie: "pie", Area: "line", Scatter: "scatter",
       };
       const type = chartTypeMap[chartType] || "bar";
 

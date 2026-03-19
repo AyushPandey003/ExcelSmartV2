@@ -95,14 +95,50 @@ const FORMULAS = [
   { cat: "Statistical", name: "SMALL",       syntax: "=SMALL(array, k)",    desc: "Returns the k-th smallest value",                       example: "=SMALL(B2:B20, 3) → 3rd lowest price",    level: "intermediate" },
   { cat: "Statistical", name: "FREQUENCY",   syntax: "=FREQUENCY(data, bins)", desc: "Counts how many values fall in each range (array formula)", example: "=FREQUENCY(B2:B50, {40,60,80}) → grade distribution", level: "advanced" },
   { cat: "Statistical", name: "CORREL",     syntax: "=CORREL(array1, array2)", desc: "Correlation between two datasets (-1 to 1)",          example: "=CORREL(B2:B20,C2:C20) → Price vs demand", level: "advanced" },
+
+  // ── Array (Excel 365 Dynamic Arrays) ──────────────────────────────────────
+  { cat: "Array", name: "UNIQUE",    syntax: "=UNIQUE(range)",                          desc: "Returns unique values from a range",               example: "=UNIQUE(A2:A100) → List of unique names",                level: "advanced" },
+  { cat: "Array", name: "SORT",      syntax: "=SORT(range, sort_index, order)",          desc: "Sorts a range dynamically",                        example: "=SORT(A2:B20, 2, -1) → Sort by col 2 descending",       level: "advanced" },
+  { cat: "Array", name: "FILTER",    syntax: "=FILTER(range, condition)",                desc: "Filters a range based on criteria",                example: "=FILTER(A2:C20, B2:B20>1000) → Rows where B>1000",      level: "advanced" },
+  { cat: "Array", name: "SEQUENCE",  syntax: "=SEQUENCE(rows, cols, start, step)",       desc: "Generates a sequence of numbers",                  example: "=SEQUENCE(10, 1, 1, 1) → Numbers 1 to 10",              level: "intermediate" },
+  { cat: "Array", name: "RANDARRAY", syntax: "=RANDARRAY(rows, cols, min, max)",         desc: "Generates random numbers in an array",             example: "=RANDARRAY(5, 3, 1, 100) → 5×3 random grid",            level: "intermediate" },
+  { cat: "Array", name: "LET",       syntax: "=LET(name1, value1, calculation)",         desc: "Assigns names to values for cleaner formulas",     example: "=LET(x, A1*2, y, B1+3, x+y)",                           level: "advanced" },
+  { cat: "Array", name: "LAMBDA",    syntax: "=LAMBDA(param, formula)(value)",           desc: "Creates custom reusable functions",                 example: "=LAMBDA(x, x*2+1)(5) → 11",                             level: "advanced" },
+  { cat: "Array", name: "MAP",       syntax: "=MAP(array, LAMBDA(x, expr))",             desc: "Applies a function to each element",               example: "=MAP(A1:A10, LAMBDA(x, x*1.18)) → Add 18% GST",         level: "advanced" },
+
+  // ── Information ─────────────────────────────────────────────────────────────
+  { cat: "Info", name: "ISBLANK",   syntax: "=ISBLANK(cell)",                           desc: "Returns TRUE if cell is empty",                    example: "=ISBLANK(A1) → TRUE if A1 is empty",                    level: "beginner" },
+  { cat: "Info", name: "ISERROR",   syntax: "=ISERROR(value)",                          desc: "Returns TRUE if value is any error",               example: "=ISERROR(A1/B1) → TRUE if divide by zero",              level: "beginner" },
+  { cat: "Info", name: "ISNUMBER",  syntax: "=ISNUMBER(value)",                         desc: "Returns TRUE if value is a number",                example: "=ISNUMBER(A1) → Check if cell has number",              level: "beginner" },
+  { cat: "Info", name: "ISTEXT",    syntax: "=ISTEXT(value)",                           desc: "Returns TRUE if value is text",                    example: "=ISTEXT(A1) → TRUE if A1 contains text",                level: "beginner" },
+  { cat: "Info", name: "TYPE",      syntax: "=TYPE(value)",                             desc: "Returns a number indicating data type",            example: "=TYPE(A1) → 1=number, 2=text, 16=error",                level: "intermediate" },
+  { cat: "Info", name: "CELL",      syntax: '=CELL("info_type", reference)',            desc: "Returns information about a cell",                 example: '=CELL("address", A1) → Returns "$A$1"',                 level: "advanced" },
+
+  // ── Database ────────────────────────────────────────────────────────────────
+  { cat: "Database", name: "DSUM",       syntax: "=DSUM(database, field, criteria)",     desc: "Sums values in a database matching criteria",       example: '=DSUM(A1:E50, "Sales", G1:G2) → Sum matching rows',     level: "advanced" },
+  { cat: "Database", name: "DAVERAGE",   syntax: "=DAVERAGE(database, field, criteria)", desc: "Averages values in a database matching criteria",   example: '=DAVERAGE(A1:E50, "Price", G1:G2)',                     level: "advanced" },
+  { cat: "Database", name: "DCOUNT",     syntax: "=DCOUNT(database, field, criteria)",   desc: "Counts numeric cells in a database matching criteria", example: '=DCOUNT(A1:E50, "Qty", G1:G2)',                    level: "advanced" },
+  { cat: "Database", name: "DMAX",       syntax: "=DMAX(database, field, criteria)",     desc: "Returns max value matching criteria",               example: '=DMAX(A1:E50, "Score", G1:G2)',                         level: "advanced" },
+  { cat: "Database", name: "DMIN",       syntax: "=DMIN(database, field, criteria)",     desc: "Returns min value matching criteria",               example: '=DMIN(A1:E50, "Score", G1:G2)',                         level: "advanced" },
+  { cat: "Database", name: "DGET",       syntax: "=DGET(database, field, criteria)",     desc: "Returns a single value matching criteria",          example: '=DGET(A1:E50, "Name", G1:G2) → Exact match',           level: "advanced" },
+
+  // ── Conversion / Engineering ────────────────────────────────────────────────
+  { cat: "Conversion", name: "CONVERT",   syntax: '=CONVERT(value, "from", "to")',     desc: "Converts between measurement units",               example: '=CONVERT(100, "kg", "lbm") → 220.46 pounds',           level: "intermediate" },
+  { cat: "Conversion", name: "DEC2BIN",   syntax: "=DEC2BIN(number)",                   desc: "Converts decimal to binary",                       example: "=DEC2BIN(10) → 1010",                                    level: "advanced" },
+  { cat: "Conversion", name: "DEC2HEX",   syntax: "=DEC2HEX(number)",                   desc: "Converts decimal to hexadecimal",                  example: "=DEC2HEX(255) → FF",                                     level: "advanced" },
+  { cat: "Conversion", name: "BIN2DEC",   syntax: "=BIN2DEC(binary)",                   desc: "Converts binary to decimal",                       example: "=BIN2DEC(1010) → 10",                                    level: "advanced" },
+  { cat: "Conversion", name: "ROMAN",     syntax: "=ROMAN(number)",                     desc: "Converts a number to Roman numerals",              example: "=ROMAN(2024) → MMXXIV",                                  level: "beginner" },
+  { cat: "Conversion", name: "ARABIC",    syntax: "=ARABIC(roman_text)",                desc: "Converts Roman numerals to a number",              example: '=ARABIC("XIV") → 14',                                   level: "beginner" },
+  { cat: "Conversion", name: "NUMBERVALUE", syntax: '=NUMBERVALUE(text, ".", ",")',     desc: "Converts text to number with locale handling",     example: '=NUMBERVALUE("1.234,56",".",",") → 1234.56',            level: "intermediate" },
 ];
 
-const CATS = ["All", "Math", "Logic", "Text", "Lookup", "Date", "Financial", "Statistical"];
+const CATS = ["All", "Math", "Logic", "Text", "Lookup", "Date", "Financial", "Statistical", "Array", "Info", "Database", "Conversion"];
 const LEVELS = ["All Levels", "beginner", "intermediate", "advanced"];
 const LEVEL_COLORS = { beginner: "b-green", intermediate: "b-blue", advanced: "b-purple" };
 const CAT_COLORS = {
   Math: "b-orange", Logic: "b-purple", Text: "b-blue",
-  Lookup: "b-green", Date: "b-red", Financial: "b-b", Statistical: "b-orange"
+  Lookup: "b-green", Date: "b-red", Financial: "b-b", Statistical: "b-orange",
+  Array: "b-p", Info: "b-y", Database: "b-r", Conversion: "b-b"
 };
 
 function CopyButton({ text }) {

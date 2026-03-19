@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import ApiKeyPanel from "../components/ApiKeyPanel";
 import { getUserGeminiKey, getUserGeminiModel } from "../lib/userGeminiKey";
 
@@ -13,18 +14,58 @@ Users are beginners. RULES:
 - If they describe a problem, give the exact formula to solve it.
 - End most answers with a follow-up offer.`;
 
-const SUGGESTIONS = [
-  "What is a cell in Excel? 📦",
-  "How do I add numbers in a column? ➕",
-  "What does the SUM formula do? 𝑓𝑥",
-  "How do I make a budget spreadsheet? 💰",
-  "What is VLOOKUP and when do I use it? 🔍",
-  "How do I make a chart from my data? 📈",
-  "How do I freeze the top row? 🔒",
-  "What does #REF! error mean? ❌",
-  "How do I use COUNTIF? 🔢",
-  "What is the difference between SUM and SUMIF? ➕",
+const TOPICS = [
+  {
+    label: "Basics", icon: "📦", color: "var(--accent)",
+    prompts: [
+      "What is a cell in Excel?",
+      "How do I add numbers in a column?",
+      "How do I freeze the top row?",
+      "What is the difference between a row and a column?",
+    ]
+  },
+  {
+    label: "Formulas", icon: "𝑓𝑥", color: "var(--blue)",
+    prompts: [
+      "What does the SUM formula do?",
+      "How do I use VLOOKUP step by step?",
+      "What is the difference between SUM and SUMIF?",
+      "How do I use INDEX MATCH instead of VLOOKUP?",
+      "How do I calculate percentage in Excel?",
+    ]
+  },
+  {
+    label: "Data & Charts", icon: "📊", color: "var(--orange)",
+    prompts: [
+      "How do I make a chart from my data?",
+      "How do I create a pivot table?",
+      "How do I remove duplicates from a column?",
+      "How do I sort data by multiple columns?",
+      "How do I use conditional formatting?",
+    ]
+  },
+  {
+    label: "Errors & Fixes", icon: "❌", color: "var(--red)",
+    prompts: [
+      "What does #REF! error mean and how to fix it?",
+      "Why am I getting #VALUE! error?",
+      "How do I fix #DIV/0! errors?",
+      "What does #N/A mean in VLOOKUP?",
+    ]
+  },
+  {
+    label: "Projects", icon: "💼", color: "var(--purple)",
+    prompts: [
+      "How do I make a budget spreadsheet?",
+      "Help me create an attendance tracker",
+      "How do I build a loan EMI calculator?",
+      "How do I make a dashboard with KPIs?",
+      "How do I create a grading system for students?",
+    ]
+  },
 ];
+
+const SUGGESTIONS = TOPICS.flatMap(t => t.prompts).slice(0, 10);
 
 export default function AskExcel() {
   const [msgs, setMsgs] = useState([{
@@ -89,7 +130,13 @@ export default function AskExcel() {
               {msgs.map((m,i)=>(
                 <div key={i} className={`msg ${m.role==="user"?"user":""}`}>
                   <div className={`msg-av ${m.role}`}>{m.role==="ai"?"📗":"👤"}</div>
-                  <div className={`msg-bub ${m.role==="ai"?"ai":""}`}><pre>{m.text}</pre></div>
+                  <div className={`msg-bub ${m.role==="ai"?"ai":""}`}>
+                    {m.role === "ai" ? (
+                      <ReactMarkdown>{m.text}</ReactMarkdown>
+                    ) : (
+                      <pre>{m.text}</pre>
+                    )}
+                  </div>
                 </div>
               ))}
               {loading&&<div className="msg"><div className="msg-av ai">📗</div><div className="msg-bub ai"><div className="typing"><span/><span/><span/></div></div></div>}
@@ -105,24 +152,29 @@ export default function AskExcel() {
           </div>
         </div>
 
-        <div style={{width:210,flexShrink:0}}>
-          <div className="card" style={{marginBottom:14}}>
-            <div className="label" style={{marginBottom:10}}>💡 Try Asking</div>
-            <div style={{display:"flex",flexDirection:"column",gap:6}}>
-              {SUGGESTIONS.map(s=>(
-                <button key={s} className="btn btn-ghost btn-sm"
-                  style={{textAlign:"left",justifyContent:"flex-start",fontSize:12,whiteSpace:"normal",lineHeight:1.4}}
-                  onClick={()=>send(s)} disabled={loading || !apiKey}>{s}</button>
-              ))}
+        <div style={{width:240,flexShrink:0}}>
+          {TOPICS.map(t=>(
+            <div key={t.label} className="card" style={{marginBottom:10,padding:14}}>
+              <div style={{fontWeight:800,fontSize:12,color:t.color,marginBottom:8,display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:15}}>{t.icon}</span> {t.label}
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                {t.prompts.map(p=>(
+                  <button key={p} className="btn btn-ghost btn-sm"
+                    style={{textAlign:"left",justifyContent:"flex-start",fontSize:11,whiteSpace:"normal",lineHeight:1.4,padding:"5px 10px"}}
+                    onClick={()=>send(p)} disabled={loading || !apiKey}>{p}</button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="card card-g">
+          ))}
+          <div className="card card-g" style={{padding:14}}>
             <div style={{fontSize:12,fontWeight:800,color:"var(--accent)",marginBottom:8}}>🎯 TIPS</div>
             <ul style={{fontSize:12,color:"var(--text2)",lineHeight:2,paddingLeft:14}}>
               <li>Ask in simple words</li>
               <li>Describe your data</li>
               <li>Say what you want to do</li>
               <li>Ask "show me an example"</li>
+              <li>Try "build me a formula for..."</li>
               <li>Upload a file for specific help</li>
             </ul>
           </div>

@@ -721,6 +721,658 @@ Workbook & Sheets:
       },
     ],
   },
+  {
+    id: "validation", icon: "✅", title: "Data Validation", badge: "b-orange", badgeText: "Intermediate",
+    lessons: [
+      {
+        title: "What is Data Validation?",
+        content: `✅ Data Validation lets you control what people can type in a cell — preventing wrong entries!
+
+Why use it?
+• Stop someone from typing text in a number-only column
+• Force dates to be within a range (e.g. this year only)
+• Create dropdown lists so users pick from options
+• Show a warning if someone enters invalid data
+
+Where to find it:
+1. Select the cell(s) you want to validate
+2. Click the Data tab
+3. Click "Data Validation"
+
+💡 Think of it like a "gatekeeper" for your cells — only the right data gets in!
+
+Real examples:
+• Age column → Only allow numbers between 1 and 120
+• Status column → Only allow "Active" or "Inactive"
+• Date column → Only allow dates in 2024-2025`,
+        formula: null,
+        quiz: {
+          q: "What is the main purpose of Data Validation?",
+          opts: ["To format cells with colors", "To control what data users can enter in cells", "To create charts", "To sort data"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Creating Dropdown Lists",
+        content: `📋 Dropdown lists are the most popular use of Data Validation — users click and pick from a list!
+
+Step-by-step:
+1. Select the cell(s) where you want the dropdown
+2. Go to Data tab → Data Validation
+3. Under "Allow", choose "List"
+4. In the "Source" box, type your options separated by commas:
+
+Example source: Active, Inactive, On Leave
+
+Or point to a range of cells:
+• Type the items in cells E1:E5
+• In Source, type: =$E$1:$E$5
+
+5. Click OK — now clicking the cell shows a dropdown! 🎉
+
+💡 Pro tips:
+• Put your list items on a separate sheet (e.g. "Lists" sheet) to keep things tidy
+• Use $ signs in range references so they don't shift when you copy the cell
+• Check "In-cell dropdown" to show the arrow button`,
+        formula: null,
+        quiz: {
+          q: "In Data Validation, which 'Allow' option creates a dropdown list?",
+          opts: ["Whole Number", "Date", "List", "Text Length"],
+          ans: 2,
+        },
+      },
+      {
+        title: "Number & Date Restrictions",
+        content: `🔢 You can restrict cells to accept only specific numbers, dates, or text lengths!
+
+Number restrictions:
+1. Select cells → Data → Data Validation
+2. Allow: "Whole Number" or "Decimal"
+3. Choose condition: between, greater than, less than, equal to
+4. Set min/max values
+
+Example: Allow only scores between 0 and 100
+• Allow: Whole Number
+• Data: between
+• Minimum: 0, Maximum: 100
+
+Date restrictions:
+• Allow: Date
+• Data: between
+• Start date: 01/01/2024, End date: 31/12/2025
+
+Text Length:
+• Allow: Text Length
+• Data: less than or equal to
+• Maximum: 50 (limit characters)
+
+⚡ Input Message: Shows a helpful tooltip when the cell is selected
+⚠️ Error Alert: Shows a warning when wrong data is entered
+
+💡 Always add a friendly Input Message like "Enter a number between 0 and 100" so users know what's expected!`,
+        formula: null,
+        quiz: {
+          q: "Which Data Validation option restricts a cell to only accept numbers from 1 to 100?",
+          opts: ["List", "Text Length", "Whole Number with 'between'", "Custom"],
+          ans: 2,
+        },
+      },
+    ],
+  },
+  {
+    id: "cond-format", icon: "🎯", title: "Conditional Formatting", badge: "b-red", badgeText: "Intermediate",
+    lessons: [
+      {
+        title: "What is Conditional Formatting?",
+        content: `🎨 Conditional Formatting automatically colors cells based on rules — making patterns jump out!
+
+Examples:
+• Highlight all values above ₹10,000 in green
+• Turn failing grades (below 40) red
+• Mark duplicate entries with yellow background
+• Color-code status: "Done" = green, "Pending" = orange
+
+How to use:
+1. Select your data range (e.g. B2:B100)
+2. Go to Home tab → Conditional Formatting
+3. Choose a rule type:
+   • Highlight Cells Rules → Greater Than, Less Than, Equal To, Text Contains
+   • Top/Bottom Rules → Top 10%, Bottom 10%
+   • Data Bars → Visual bars inside cells
+   • Color Scales → Gradient heatmaps
+
+Quick example — highlight sales above 5000:
+1. Select the sales column
+2. Conditional Formatting → Highlight Cells Rules → Greater Than
+3. Type 5000 → Pick green fill → OK
+
+💡 You can apply MULTIPLE rules to the same cells — they layer on top of each other!`,
+        formula: null,
+        quiz: {
+          q: "Where do you find Conditional Formatting in Excel?",
+          opts: ["Data tab", "Insert tab", "Home tab", "View tab"],
+          ans: 2,
+        },
+      },
+      {
+        title: "Color Scales & Data Bars",
+        content: `📊 Color Scales and Data Bars give you instant visual analysis!
+
+DATA BARS:
+• Each cell gets a horizontal bar proportional to its value
+• Bigger number = longer bar
+• Great for: Sales figures, scores, quantities
+
+To add: Select data → Conditional Formatting → Data Bars → Pick a style
+
+COLOR SCALES:
+• Cells get a color gradient based on value
+• Low values → one color, High values → another
+• Like a heatmap in your spreadsheet!
+
+Common color scales:
+🟢🟡🔴 Green-Yellow-Red (good to bad)
+🔴🟡🟢 Red-Yellow-Green (bad to good)
+🔵⬜ Blue-White (intensity)
+
+To add: Select data → Conditional Formatting → Color Scales → Pick a gradient
+
+ICON SETS:
+• Small icons appear in each cell (arrows, stars, flags, traffic lights)
+• Great for dashboards and status indicators
+
+To add: Select data → Conditional Formatting → Icon Sets → Pick a set
+
+💡 Use Color Scales for big datasets — you can spot trends and outliers instantly without reading every number!`,
+        formula: null,
+        quiz: {
+          q: "What do Data Bars show in each cell?",
+          opts: ["A pie chart", "A horizontal bar proportional to the cell's value", "A sparkline chart", "Colored text"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Custom Rules with Formulas",
+        content: `🧮 For advanced rules, you can use your own formulas in Conditional Formatting!
+
+How to create a formula-based rule:
+1. Select your data range
+2. Home → Conditional Formatting → New Rule
+3. Choose "Use a formula to determine which cells to format"
+4. Enter your formula
+5. Click Format → choose your colors → OK
+
+Example formulas:`,
+        formula: "=A1>AVERAGE($A$1:$A$20)",
+        formulaNote: "Highlights cells above the average — use $ signs to lock the range!",
+        content2: `
+More formula examples:
+
+Highlight entire row if Status = "Overdue":`,
+        formula2: '=$E1="Overdue"',
+        formulaNote2: "The $ before E locks the column, but the row changes — so each row is checked",
+        content3: `
+Highlight weekends:`,
+        formula3: "=WEEKDAY(A1,2)>5",
+        formulaNote3: "Returns TRUE for Saturday (6) and Sunday (7)",
+        content4: `
+💡 Key rules for formula-based formatting:
+• The formula must return TRUE or FALSE
+• Use $ to lock columns/rows as needed
+• Reference the FIRST cell in your selection (e.g. A1, not A2:A100)
+• Test your formula in a regular cell first to make sure it works!`,
+        quiz: {
+          q: "In a Conditional Formatting formula rule, what must the formula return?",
+          opts: ["A number", "A color code", "TRUE or FALSE", "The cell address"],
+          ans: 2,
+        },
+      },
+    ],
+  },
+  {
+    id: "power", icon: "⚡", title: "Power Features", badge: "b-purple", badgeText: "Expert",
+    lessons: [
+      {
+        title: "Flash Fill — Magic Pattern Detection",
+        content: `✨ Flash Fill is like magic — Excel detects a pattern from your examples and fills the rest!
+
+Available in Excel 2013 and later.
+
+How to use:
+1. Type the pattern you want in the first cell
+2. Start typing the second one
+3. Press CTRL + E — Excel fills the rest! 🎉
+
+Examples of what Flash Fill can do:
+
+Extracting first names:
+• Column A has "Rahul Sharma", "Priya Patel", "Amit Singh"
+• In B1, type "Rahul"
+• In B2, start typing "Priya" → press CTRL + E
+• Excel fills: Rahul, Priya, Amit
+
+Reformatting phone numbers:
+• A1: 9876543210 → B1: type "+91-98765-43210"
+• Press CTRL+E on next cell → all numbers reformatted!
+
+Combining data:
+• A1: "Mumbai", B1: "Maharashtra" → C1: type "Mumbai, Maharashtra"
+• CTRL+E fills the rest
+
+📍 Also accessible from: Data tab → Flash Fill
+
+💡 Flash Fill works best when your pattern is clear and consistent. If it doesn't detect correctly, add one more example row and try again.`,
+        formula: null,
+        quiz: {
+          q: "What keyboard shortcut activates Flash Fill?",
+          opts: ["CTRL + F", "CTRL + E", "CTRL + D", "CTRL + SHIFT + F"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Remove Duplicates & Text to Columns",
+        content: `🔄 Two essential Data tab tools for cleaning messy data!
+
+REMOVE DUPLICATES:
+1. Select your data (or click any cell in the table)
+2. Go to Data tab → Remove Duplicates
+3. Choose which columns to check for duplicates
+4. Click OK → Excel removes duplicate rows and tells you how many were deleted
+
+⚠️ TIP: Always make a backup before removing duplicates — the action can't be undone easily!
+
+TEXT TO COLUMNS:
+Splits one column into multiple columns — perfect for cleaning imported data.
+
+1. Select the column with combined data
+2. Data tab → Text to Columns
+3. Choose:
+   • "Delimited" → Split by comma, space, tab, semicolon, or custom character
+   • "Fixed Width" → Split at specific character positions
+4. Click Next → choose your delimiter → Finish
+
+Example — splitting "Mumbai, Maharashtra" into two columns:
+• Choose Delimited → check "Comma" → Finish
+• Column A: "Mumbai" | Column B: "Maharashtra"
+
+💡 Text to Columns is also great for fixing dates that Excel doesn't recognize — select the column, run Text to Columns, and choose the date format.`,
+        formula: null,
+        quiz: {
+          q: "What does 'Text to Columns' do?",
+          opts: ["Converts numbers to text", "Splits one column into multiple columns", "Changes text direction", "Counts text characters"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Protecting Sheets & Workbooks",
+        content: `🔒 Protect your work from accidental edits — essential for shared spreadsheets!
+
+PROTECT A SHEET:
+1. Go to Review tab → Protect Sheet
+2. (Optional) Set a password
+3. Choose what users CAN do (checkboxes):
+   • Select locked/unlocked cells
+   • Format cells, insert rows, sort, filter
+4. Click OK
+
+UNLOCK SPECIFIC CELLS (before protecting):
+1. Select the cells you want people to edit
+2. Right-click → Format Cells → Protection tab
+3. UNCHECK "Locked"
+4. Now protect the sheet — those cells remain editable!
+
+PROTECT A WORKBOOK:
+• Review → Protect Workbook
+• Prevents users from adding, deleting, or renaming sheets
+
+PROTECT CELLS WITH FORMULAS:
+Best practice for shared sheets:
+1. Unlock all input cells (where users type)
+2. Keep formula cells locked (default)
+3. Protect the sheet → Users can enter data but can't break formulas!
+
+💡 Pro tips:
+• Use a password you remember — there's no "forgot password" option!
+• Hidden sheets can also be protected from being unhidden
+• For extra security, save as .xlsx with a workbook password (File → Save As → Tools → General Options)`,
+        formula: null,
+        quiz: {
+          q: "Which tab has the 'Protect Sheet' button?",
+          opts: ["Home", "Data", "Review", "Insert"],
+          ans: 2,
+        },
+      },
+    ],
+  },
+  {
+    id: "print", icon: "🖨️", title: "Print & Page Setup", badge: "b-blue", badgeText: "Intermediate",
+    lessons: [
+      {
+        title: "Page Setup & Print Area",
+        content: `🖨️ Before printing, you need to set up the page properly!
+
+Setting up Page Layout:
+1. Go to Page Layout tab
+2. Set these important options:
+   • Orientation → Landscape (wide data) or Portrait (tall data)
+   • Size → A4 (most common in India)
+   • Margins → Normal or Narrow
+
+Setting a Print Area (print only specific cells):
+1. Select the range you want to print (e.g. A1:G20)
+2. Page Layout → Print Area → Set Print Area
+3. Now only those cells will print!
+
+To remove: Page Layout → Print Area → Clear Print Area
+
+💡 Pro tips:
+• Use CTRL + P to preview before printing
+• Click "Print Preview" to see exactly how it will look
+• Use View → Page Break Preview to see where pages split
+• Drag the blue dotted lines to adjust page breaks
+
+⚡ To fit a wide table on one page:
+Page Layout → Width → 1 page | Height → Automatic`,
+        formula: null,
+        quiz: {
+          q: "How do you print only specific cells in Excel?",
+          opts: ["Delete the other cells first", "Select cells → Page Layout → Set Print Area", "Hide the other columns", "Use CTRL + P + Select"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Headers, Footers & Print Titles",
+        content: `📄 Add professional headers/footers and repeat row titles on every printed page!
+
+Adding Headers & Footers:
+1. Go to Insert tab → Header & Footer
+2. Click the header/footer area
+3. Type text or use built-in elements:
+   • Page Number: &[Page]
+   • Total Pages: &[Pages]
+   • Date: &[Date]
+   • File Name: &[File]
+
+Common header/footer combos:
+• Header: "Company Name" | Center: "Report Title" | Right: Date
+• Footer: Left: "Confidential" | Center: "Page 1 of 5"
+
+Repeating Headers on Every Page (Print Titles):
+1. Page Layout → Print Titles
+2. "Rows to repeat at top" → Click Row 1 (or your header row)
+3. Click OK
+
+Now Row 1 appears at the top of EVERY printed page! 🎉
+
+💡 This is essential for long spreadsheets — without it, page 2 onwards won't have column headers.`,
+        formula: null,
+        quiz: {
+          q: "What feature makes Row 1 appear on every printed page?",
+          opts: ["Freeze Panes", "Print Titles", "Page Header", "Repeat Row"],
+          ans: 1,
+        },
+      },
+    ],
+  },
+  {
+    id: "named-ranges", icon: "🏷️", title: "Named Ranges & Tables", badge: "b-green", badgeText: "Intermediate",
+    lessons: [
+      {
+        title: "Named Ranges — Give Cells a Name",
+        content: `🏷️ Instead of remembering "B2:B50", you can name a range something meaningful like "Sales" or "Prices"!
+
+Creating a Named Range:
+1. Select the cells (e.g. B2:B50)
+2. Click the Name Box (top-left, shows "B2")
+3. Type a name (e.g. "MonthlySales") → Press Enter
+
+Now you can use it in formulas:`,
+        formula: "=SUM(MonthlySales)",
+        formulaNote: "Much easier to read than =SUM(B2:B50)!",
+        content2: `
+More examples:
+• =AVERAGE(StudentScores) instead of =AVERAGE(C2:C30)
+• =MAX(Prices) instead of =MAX(D2:D100)
+
+To manage all named ranges:
+• Formulas tab → Name Manager
+• Here you can edit, delete, or see all your names
+
+Rules for naming:
+• No spaces (use underscores: "Total_Sales")
+• Must start with a letter or underscore
+• Can't be a cell reference (can't name something "A1")
+
+💡 Named ranges make formulas self-documenting — anyone can read =SUM(Revenue) and understand it!`,
+        quiz: {
+          q: "Where do you type to create a Named Range?",
+          opts: ["The formula bar", "The Name Box (top-left corner)", "A cell in the sheet", "The status bar"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Excel Tables — Structured Data",
+        content: `📊 An Excel Table is a special format that makes data management much easier!
+
+Creating a Table:
+1. Click anywhere in your data
+2. Press CTRL + T (or Insert → Table)
+3. Check "My table has headers" → OK
+
+What happens when you create a Table:
+✅ Auto-filters on every column
+✅ Banded rows (alternating colors) for readability
+✅ Structured references in formulas
+✅ Auto-expands when you add new rows
+✅ Total Row option (click checkbox in Table Design)
+
+Structured References (Table formulas):`,
+        formula: "=SUM(SalesTable[Amount])",
+        formulaNote: "Uses the table name and column name — no cell references needed!",
+        content2: `
+More structured reference examples:
+• =AVERAGE(SalesTable[Price]) → Average of the Price column
+• =COUNTIF(SalesTable[City], "Mumbai") → Count Mumbai rows
+
+To add a Total Row:
+• Click the table → Table Design tab → Check "Total Row"
+• Click the total cell → Pick Sum, Average, Count, etc.
+
+💡 Tables are the #1 best practice for organizing data in Excel — they prevent most formula errors and make everything easier!`,
+        quiz: {
+          q: "What keyboard shortcut creates an Excel Table?",
+          opts: ["CTRL + T", "CTRL + E", "CTRL + L", "CTRL + N"],
+          ans: 0,
+        },
+      },
+      {
+        title: "Table Slicers & Styles",
+        content: `🎨 Make your tables interactive and beautiful!
+
+Table Styles:
+1. Click anywhere in the table
+2. Go to Table Design tab
+3. Browse the Style Gallery — pick a color scheme
+4. Check/uncheck: Banded Rows, Banded Columns, First Column, Last Column
+
+Slicers — Visual Filters:
+1. Click the table
+2. Table Design → Insert Slicer (or Insert tab → Slicer)
+3. Check the column(s) you want as filters → OK
+4. Click buttons in the slicer to filter your table!
+
+Example: Create a slicer for "Department"
+• Now click "Sales" → only Sales rows show
+• Click "HR" → only HR rows show
+• Hold CTRL + click to select multiple
+
+To remove slicer filter: Click the clear filter button (🔄) in the slicer header
+
+💡 Slicers are perfect for:
+• Dashboards — let users explore data visually
+• Presentations — click to filter live during a meeting
+• Reports — quickly switch between views of the data`,
+        formula: null,
+        quiz: {
+          q: "What do Slicers provide for Excel Tables?",
+          opts: ["Automatic formulas", "Visual clickable filter buttons", "Charts and graphs", "Cell formatting"],
+          ans: 1,
+        },
+      },
+    ],
+  },
+  {
+    id: "errors", icon: "🚨", title: "Error Handling", badge: "b-red", badgeText: "Intermediate",
+    lessons: [
+      {
+        title: "Understanding Excel Errors",
+        content: `🚨 Excel errors look scary but they all have simple explanations!
+
+Common errors and what they mean:
+
+#DIV/0! — Division by zero
+• You tried to divide by 0 or an empty cell
+• Fix: Check if the divisor cell has data
+
+#VALUE! — Wrong value type
+• You used text where a number was expected
+• Fix: Check for hidden spaces or text in number columns
+
+#REF! — Broken reference
+• A cell you referenced was deleted
+• Fix: Re-create the formula with correct cells
+
+#NAME? — Unknown formula name
+• You misspelled a function name or forgot quotes
+• Fix: Check spelling, add "quotes" around text
+
+#N/A — Value not found
+• VLOOKUP or MATCH didn't find what you searched for
+• Fix: Check spelling, ensure data exists
+
+#NUM! — Invalid number
+• Math result is too large or formula logic is impossible
+• Fix: Check your inputs and formula logic
+
+#NULL! — Wrong range operator
+• You used a space instead of : or , between ranges
+• Fix: Use A1:A10 (colon) not A1 A10
+
+💡 Hover over the error cell → Excel shows a small yellow triangle with explanation!`,
+        formula: null,
+        quiz: {
+          q: "What does #DIV/0! error mean?",
+          opts: ["The cell is too small", "You divided by zero or an empty cell", "The formula name is wrong", "A referenced cell was deleted"],
+          ans: 1,
+        },
+      },
+      {
+        title: "IFERROR & Error Trapping",
+        content: `🛡️ IFERROR wraps around formulas to catch errors and show a friendly message instead!`,
+        formula: '=IFERROR(A1/B1, "N/A")',
+        formulaNote: "If A1/B1 causes an error → shows 'N/A' instead of the ugly #DIV/0!",
+        content2: `
+Real-world examples:
+
+Protect VLOOKUP from #N/A:`,
+        formula2: '=IFERROR(VLOOKUP(A2, D:F, 3, 0), "Not Found")',
+        formulaNote2: "If the lookup fails, shows 'Not Found' instead of #N/A",
+        content3: `
+Show 0 instead of divide-by-zero:`,
+        formula3: "=IFERROR(C2/D2, 0)",
+        formulaNote3: "If D2 is empty or 0, shows 0 instead of #DIV/0!",
+        content4: `
+IFNA — Only catches #N/A errors (ignores other errors):
+=IFNA(VLOOKUP(...), "Missing") → Only catches #N/A, lets other errors show
+
+When to use which:
+• IFERROR → Catch ALL errors (most common)
+• IFNA → Only catch #N/A (safer for lookups — won't hide real errors)
+
+💡 Best practice: Always wrap VLOOKUP and division formulas with IFERROR!`,
+        quiz: {
+          q: "What's the difference between IFERROR and IFNA?",
+          opts: ["They are the same", "IFERROR catches all errors, IFNA only catches #N/A", "IFNA is newer and replaces IFERROR", "IFERROR only works with VLOOKUP"],
+          ans: 1,
+        },
+      },
+    ],
+  },
+  {
+    id: "sparklines", icon: "✨", title: "Sparklines & Mini Charts", badge: "b-blue", badgeText: "Advanced",
+    lessons: [
+      {
+        title: "What are Sparklines?",
+        content: `✨ Sparklines are tiny charts that fit inside a single cell — perfect for showing trends at a glance!
+
+Types of Sparklines:
+📈 Line — shows trends over time
+📊 Column — shows individual value comparisons
+🏆 Win/Loss — shows positive/negative results
+
+Creating a Sparkline:
+1. Click the cell where you want the sparkline
+2. Go to Insert tab → Sparklines section
+3. Choose Line, Column, or Win/Loss
+4. Data Range: Select your numbers (e.g. B2:M2 for 12 months)
+5. Click OK — a mini chart appears in your cell! 🎉
+
+Example: Monthly sales in B2:M2
+• Insert Line Sparkline → shows the sales trend in one cell
+• Copy the cell down → each row gets its own sparkline
+
+💡 Sparklines are amazing for dashboards:
+• One column of sparklines next to your data
+• Instantly see which products are trending up or down
+• They print and look great in reports
+
+To delete: Click the sparkline cell → Sparkline tab → Clear`,
+        formula: null,
+        quiz: {
+          q: "What is a Sparkline in Excel?",
+          opts: ["A type of formula", "A tiny chart inside a single cell", "A conditional format", "A type of filter"],
+          ans: 1,
+        },
+      },
+      {
+        title: "Customizing Sparklines",
+        content: `🎨 Make your sparklines informative and beautiful!
+
+After creating a sparkline, click it → Sparkline tab appears:
+
+Highlight Points:
+✅ High Point — marks the highest value
+✅ Low Point — marks the lowest value
+✅ First Point / Last Point — marks start and end
+✅ Negative Points — highlights negative values in red
+✅ Markers — shows dots at every data point (Line only)
+
+Change Colors:
+• Sparkline Color → Change the line/bar color
+• Marker Color → Change individual marker colors
+• High Point can be green, Low Point can be red
+
+Change Type:
+• Switch between Line, Column, Win/Loss anytime
+
+Axis Options (Sparkline tab → Axis):
+• Same scale for all sparklines → Makes comparison fair
+• Different scale per sparkline → Shows individual trends better
+
+Grouping Sparklines:
+• Select all sparkline cells → they format together
+• Useful for consistent colors and scales across rows
+
+💡 Pro combo: Use a sparkline column next to your data, then conditional formatting on the last month's value → instant dashboard!`,
+        formula: null,
+        quiz: {
+          q: "How do you highlight the highest value in a Sparkline?",
+          opts: ["Use conditional formatting", "Click Sparkline tab → check 'High Point'", "Use the MAX formula", "Right-click → Format"],
+          ans: 1,
+        },
+      },
+    ],
+  },
 ];
 
 export default function LearnExcel() {

@@ -6,7 +6,7 @@ variable "subscription_id" {
 variable "resource_group_name" {
   description = "Pre-existing resource group name"
   type        = string
-  default     = "citizenbridge-rg"
+  default     = "learningazure"
 }
 
 variable "location" {
