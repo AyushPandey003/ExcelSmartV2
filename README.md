@@ -1,7 +1,7 @@
 # 📗 ExcelSmart v2 — AI Excel Tutor & File Analyzer
 
 Full-stack Excel learning + generation + file analysis tool.
-- **Frontend:** React 18 + Vite
+- **Frontend:** React 19 + Vite
 - **Backend:** ASP.NET Core 8 + **EPPlus 7** (NonCommercial License)
 - **AI:** Gemini (Bring Your Own Key from browser)
 
